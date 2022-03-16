@@ -17,8 +17,10 @@ OUTPUT:
 
 def snr2boresight(filename,gain):
 
+    #Opens the txt file containing raw GPS data
     df = open(filename)
 
+    #GPS parser to pull out Elevation, Azimuth, and Signal-To-Noise Ratio
     for line in df:
         if not line.startswith('$GPGSV') :
             continue
@@ -27,22 +29,38 @@ def snr2boresight(filename,gain):
         AZ = int(pieces[6])
         SNR = int(pieces[7])
 
-    alpha = np.arccos((SNR/gain)-1)
+    print('Satellite Information')
+    print('Elevation angle:', EL)
+    print('Azimuth angle:', AZ)
+    print('Signal-to-Noise Ratio (dB):', SNR)
+    print('')
 
-    sat_1 =  np.sin(np.deg2rad(AZ)) * np.cos(np.deg2rad(EL))
-    sat_2 =  np.cos(np.deg2rad(AZ)) * np.cos(np.deg2rad(EL))
-    sat_3 =  np.sin(np.deg2rad(EL))
+    #Determines off-angle between LOS and Boresight vector
+    cos_alf = SNR/(100*gain)-1
+    alpha = np.arccos(SNR/(100*gain)-1)
 
-    LOS = np.array([sat_1,sat_2,sat_3]);
-    LOS_mag = np.sqrt(sat_1**2 + sat_2**2 + sat_3**2)
-    LOS_norm = LOS/LOS_mag
 
-    LOS_norm_t = np.transpose(LOS_norm)
-
-    #boresight = np.cos(alpha)/LOS_norm_t (need to figure out)
+    #Determines line of sight vector
+    sat_1 = np.sin(np.deg2rad(AZ)) * np.cos(np.deg2rad(EL))
+    sat_2 = np.cos(np.deg2rad(AZ)) * np.cos(np.deg2rad(EL))
+    sat_3 = np.sin(np.deg2rad(EL))
 
     #boresight is A, where A dot L (line of sight) = cos(a)
-    boresight = [1,0,0]
+
+    #Setting up boresight solver
+    LOS = np.array([sat_1,sat_2,sat_3])
+    LOS_t = np.transpose(LOS)
+    LOS_tr = LOS_t*LOS
+
+    #Solving system of equations
+    LOS_full = np.eye(3)*np.transpose(LOS_tr)
+    alf_full = LOS_t*cos_alf
+
+    #Finding boresight vector
+    boresight = np.linalg.solve(LOS_full,alf_full)
+
+    #LOS_mag = np.sqrt(sat_1**2 + sat_2**2 + sat_3**2)
+    #LOS_norm = LOS/LOS_mag
     return boresight
 
 """
@@ -62,6 +80,7 @@ def quat2rpy(quat):
     q2 = quat[2]
     q3 = quat[3]
 
+    #Calculates roll, pitch, and yaw from quaternion
     roll = np.arctan((2*(q2*q3 + q0*q1))/(2*q0**2 + 2*q3**2 - 1))
     pitch = np.arcsin(-2*q1*q3 - 2*q0*q2)
     yaw =  np.arctan((2*(q1*q2 + q0*q3))/(2*q0**2 + 2*q1**2 - 1))

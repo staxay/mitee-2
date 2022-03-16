@@ -23,10 +23,9 @@ import numpy as np
 import eig_helper as eh
 import sun_vector_approx as sv
 import gps_snr as gp
-import test_data
 from math import sqrt
 from math import degrees
-import time
+import datetime
 
 def quest(body_vecs,weights,inertial_vecs,precision=0.000001):
 
@@ -150,17 +149,24 @@ def rpy_degrees(rpy):
     return rpy
 
 def main():
+
+    print('Data from:', datetime.datetime.now())
+    print('')
+
+    filename = "test_data.txt"
+    gain = 1
+
     body_0 = np.array([[1,0,0],[0,1,0]])
     body = np.array([[0.8660254,-0.5,0],[0.5,0.8660254,0]])
     body_90 = np.array([[0,1,0],[-1,0,0]])
     body_180z = np.array([[-1,0,0],[0,-1,0]])
     body_180y = np.array([[-1,0,0],[0,1,0]])
     body_180x = np.array([[1,0,0],[0,-1,0]])
+
     pd_volts = np.array([1,2,3,4])
     volts = sv.estimate_sun_vec(pd_volts)
+    boresight = gp.snr2boresight(filename,gain);
 
-    gain = 1
-    boresight = gp.snr2boresight(test_data.txt,gain);
     inertial = np.array([volts,boresight])
 
     body_raw = np.array([[0.7814,0.3751,0.4987],[0.6163,0.7075,-0.3459]])
@@ -176,27 +182,18 @@ def main():
     b_z_correct = np.array([0,0,0,1])
     w = np.array([[1],[1]])
     i = np.array([[1,0,0],[0,1,0]])
-    #tic = time.perf_counter()
 
     print("original\n",body_raw)
+    print('')
     out = quest(body_raw,w,inertial)
     nout = quat2rpy(out)
-    print("output=\n",nout)
+    print("Roll, Pitch, and Yaw Euler angles:\n")
+    print("Attitude (rad):\n",nout,"\n")
     nout = rpy_degrees(nout)
-    print("output=\n",nout)
-    print("actual=\n",b_x_correct)
-
-    print("original\n",b_y_180)
-    out = quest(b_y_180,w,i)
-    out = quat2rpy(out)
-    print("output=\n",out)
-    print("actual=\n",b_y_correct)
-
-    print("original\n",b_z_180)
-    out = quest(b_z_180,w,i)
-    out = quat2rpy(out)
-    print("output=\n",out)
-    print("actual=\n",b_z_correct)
+    #print("Attitude (deg):\n",nout)
+    print('Roll:', nout[0], "degrees")
+    print('Pitch:', nout[1], "degrees")
+    print('Yaw:', nout[2], "degrees")
 
 if __name__ == "__main__":
     main()
