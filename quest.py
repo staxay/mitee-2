@@ -107,32 +107,6 @@ def quest(body_vecs,weights,inertial_vecs,precision=0.000001):
 
     return(quat)
 
-
-"""
-PURPOSE:
-    Translates quaternion to roll, pitch, and yaw angles for simplicity
-PARAMETERS:
-    Quaternion of current attitude <q0 q1 q2 q3>, where q0 is the scalar term
-    (It'll just be a 1x4 numpy array, since numpy doesnt support quaternions natively.)
-OUTPUT:
-    1x3 array of roll, pitch, and yaw angles respectively
-"""
-def quat2rpy(quat):
-
-    #Pulls out each quaterion value from array for ease of use
-    q0 = quat[0]
-    q1 = quat[1]
-    q2 = quat[2]
-    q3 = quat[3]
-
-    roll = np.arctan((2*(q2*q3 + q0*q1))/(2*q0**2 + 2*q3**2 - 1))
-    pitch = np.arcsin(-2*q1*q3 - 2*q0*q2)
-    yaw =  np.arctan((2*(q1*q2 + q0*q3))/(2*q0**2 + 2*q1**2 - 1))
-
-    rpy = np.array([roll,pitch,yaw])
-
-    return(rpy)
-
 """
 PURPOSE:
     Translates roll, pitch, and yaw angles to degrees for simplicity
@@ -186,7 +160,7 @@ def main():
     print("original\n",body_raw)
     print('')
     out = quest(body_raw,w,inertial)
-    nout = quat2rpy(out)
+    nout = gp.quat2rpy(out)
     print("Roll, Pitch, and Yaw Euler angles:\n")
     print("Attitude (rad):\n",nout,"\n")
     nout = rpy_degrees(nout)
