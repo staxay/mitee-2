@@ -18,16 +18,19 @@ OUTPUT:
 def snr2boresight(filename,gain):
 
     #Opens the txt file containing raw GPS data
-    df = open(filename)
+    df = reversed(open(filename).readlines())
 
     #GPS parser to pull out Elevation, Azimuth, and Signal-To-Noise Ratio
+
     for line in df:
         if not line.startswith('$GPGSV') :
             continue
-        pieces = line.split(',')
-        EL = int(pieces[5])
-        AZ = int(pieces[6])
-        SNR = int(pieces[7])
+        else:
+            pieces = line.split(',')
+            EL = int(pieces[5])
+            AZ = int(pieces[6])
+            SNR = int(pieces[7])
+            break
 
     print('Satellite Information')
     print('Elevation angle:', EL)
