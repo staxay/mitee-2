@@ -1,7 +1,7 @@
 # Attitude Determination Code for MiTEE-2
 
 ### Written by: Sam Taxay
-### Adapted from [MiTEE-1 OADCS Code](https://gitlab.eecs.umich.edu/mitee-oadcs/attitude-determination-for-mitee-1/-/tree/main/)
+### Adapted from [MiTEE-1 OADCS Code](https://gitlab.eecs.umich.edu/mitee-oadcs/attitude-determination-for-mitee-1/-/tree/main/) and Brian Leung's [QUEST Algorithm](https://github.com/bleung329/py_QUEST)
 
 ## What is this?
 
