@@ -18,6 +18,7 @@ OUTPUT:
 def snr2boresight(filename,gain):
 
     #Opens the txt file containing raw GPS data
+    #But, opens the txt file in reverse to read most recent data
     df = reversed(open(filename).readlines())
 
     #GPS parser to pull out Elevation, Azimuth, and Signal-To-Noise Ratio
