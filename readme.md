@@ -2,7 +2,7 @@
 
 ### Written by: Sam Taxay
 ### Adapted from [MiTEE-1 OADCS Code](https://gitlab.eecs.umich.edu/mitee-oadcs/attitude-determination-for-mitee-1/-/tree/main/) and Brian Leung's [QUEST Algorithm](https://github.com/bleung329/py_QUEST)
-### [Visit MiTEE's website for more details!](https://clasp-research.engin.umich.edu/groups/s3fl/mitee/home/)
+#### [Visit MiTEE's website for more details!](https://clasp-research.engin.umich.edu/groups/s3fl/mitee/home/)
 ## What is this?
 
 Before being implemented into the OADCS microcontroller onboard the MiTEE-2 satellite, the OADCS sub-team uses code like this to determine the attitude of MiTEE-2 while in space.
